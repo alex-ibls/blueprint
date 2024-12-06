@@ -2,20 +2,19 @@
 import type { FunctionComponent } from '../common/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Assets, BlurFilter, TextStyle } from 'pixi.js';
-import { Stage, Container, Sprite, Text, _ReactPixi, useApp } from '@pixi/react';
-
-const loadBlueprintTexture = async (sceneSize: any) => {};
+import { Stage, _ReactPixi } from '@pixi/react';
+import { PanelBoard } from '../components/panel-board';
 
 export const ScenePage = (): FunctionComponent => {
   //const { t, i18n } = useTranslation();
   //const onTranslateButtonClick = async (): Promise<void> => {};
-  const app = useApp();
+
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
   const [sceneSize, setSceneSize] = useState<{ width: number; height: number }>(
     { width: 0, height: 0 },
   );
-  const bunnyUrl = 'https://pixijs.io/pixi-react/img/bunny.png';
+
   useEffect(() => {
     if (containerRef.current) {
       const width: number = containerRef?.current.offsetWidth || 0;
@@ -37,14 +36,11 @@ export const ScenePage = (): FunctionComponent => {
     >
       <Stage
         ref={stageRef}
-        width={sceneSize.width}
-        height={sceneSize.height}
-        options={{ background: 0xffffff, resizeTo: window }}
+        width={5000}
+        height={5000}
+        options={{ background: 0xffffff,  resolution: 1 }}
       >
-        {' '}
-        <Container position={[0, 0]}
-		
-		></Container>
+        <PanelBoard size={sceneSize} />
       </Stage>
     </div>
   );
