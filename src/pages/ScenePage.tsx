@@ -18,6 +18,7 @@ export const ScenePage = (): FunctionComponent => {
   );
 
   const [mount, setMount] = useState<boolean>(false);
+  const [mouseMove, setMouseMove] = useState<[number, number]>([0, 0]);
   useEffect(() => {
     if (containerRef.current) {
       const width: number = containerRef?.current.offsetWidth || 0;
@@ -34,19 +35,26 @@ export const ScenePage = (): FunctionComponent => {
   }, [stageRef.current]);
 
   return (
-    <div
-    
-      ref={containerRef}
-    >
+    <div ref={containerRef}>
       <Stage
         ref={stageRef}
         width={5000}
         height={5000}
         options={{ background: 0xffffff, resolution: 1, antialias: true }}
+        onMouseMove={(e) => {
+          setMouseMove([e.clientX, e.clientY]);
+        }}
       >
         <PanelBoard size={sceneSize} />
 
-		<RectanglePrm x={10} y={10} width={100} height={100} color={0xff00ff}/>
+        <RectanglePrm
+          x={10}
+          y={10}
+          width={100}
+          height={100}
+          color={0xff00ff}
+          mouseMove={mouseMove}
+        />
       </Stage>
     </div>
   );
