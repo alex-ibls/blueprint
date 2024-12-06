@@ -2,8 +2,10 @@
 import type { FunctionComponent } from '../common/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Assets, BlurFilter, TextStyle } from 'pixi.js';
-import { Stage, _ReactPixi } from '@pixi/react';
+import { ColorSource, Graphics as PixiGraphics } from 'pixi.js';
+import { Container, Graphics, Stage, _ReactPixi } from '@pixi/react';
 import { PanelBoard } from '../components/panel-board';
+import { RectanglePrm } from '../components/primitives';
 
 export const ScenePage = (): FunctionComponent => {
   //const { t, i18n } = useTranslation();
@@ -15,6 +17,7 @@ export const ScenePage = (): FunctionComponent => {
     { width: 0, height: 0 },
   );
 
+  const [mount, setMount] = useState<boolean>(false);
   useEffect(() => {
     if (containerRef.current) {
       const width: number = containerRef?.current.offsetWidth || 0;
@@ -26,21 +29,24 @@ export const ScenePage = (): FunctionComponent => {
 
   useEffect(() => {
     //loadBlueprintTexture(stageRef.current?.options.)
+    setMount(true);
     console.log(stageRef.current.app);
-  }, [stageRef.current?.app?.stage]);
+  }, [stageRef.current]);
 
   return (
     <div
-      className="bg-blue-300  font-bold w-screen h-screen flex flex-col justify-center items-center"
+    
       ref={containerRef}
     >
       <Stage
         ref={stageRef}
         width={5000}
         height={5000}
-        options={{ background: 0xffffff,  resolution: 1 }}
+        options={{ background: 0xffffff, resolution: 1, antialias: true }}
       >
         <PanelBoard size={sceneSize} />
+
+		<RectanglePrm x={10} y={10} width={100} height={100} color={0xff00ff}/>
       </Stage>
     </div>
   );

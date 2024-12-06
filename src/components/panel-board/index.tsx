@@ -1,9 +1,9 @@
-import { Container, Sprite, TilingSprite, useApp } from '@pixi/react';
-import { Assets } from 'pixi.js';
+import { Container, Graphics, TilingSprite, useApp } from '@pixi/react';
+import { Assets, Graphics as PixieGraphics } from 'pixi.js';
 import { useEffect } from 'react';
 
 const loadBlueprint = async () => {
-const texture = await Assets.load('/src/assets/textures/blueprint_gray.png');
+  const texture = await Assets.load('/src/assets/textures/blueprint_gray.png');
 };
 
 export const PanelBoard = ({
@@ -13,11 +13,11 @@ export const PanelBoard = ({
 }) => {
   const app = useApp();
 
-  useEffect(()=>{
-    if(size.height && size.width){
-        
+  useEffect(() => {
+    if (size.height && size.width) {
     }
-  },[size]);
+  }, [size]);
+
   return (
     <Container position={[0, 0]} width={5000} height={5000}>
       <TilingSprite
@@ -26,7 +26,7 @@ export const PanelBoard = ({
         height={5000}
         tilePosition={{ x: 0, y: 0 }}
         tileScale={{ x: 1, y: 1 }}
-      />
+      ></TilingSprite>
     </Container>
   );
 };
