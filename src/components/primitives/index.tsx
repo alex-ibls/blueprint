@@ -36,8 +36,8 @@ export const RectanglePrm = (props: {
   const SetMouseBind = (e: FederatedPointerEvent) => {
     console.log(e);
     if (ref.current) {
-      const offsetX = e.screenX - ref.current?.getBounds().left;
-      const offsetY = e.screenY - ref.current?.getBounds().top;
+      const offsetX = e.clientX - ref.current?.getBounds().left;
+      const offsetY = e.clientY - ref.current?.getBounds().top;
       setMouseBind([offsetX, offsetY]);
       setDrag(!drag);
     }

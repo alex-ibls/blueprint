@@ -1,11 +1,10 @@
 //import { useTranslation } from 'react-i18next';
 import type { FunctionComponent } from '../common/types';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Assets, BlurFilter, TextStyle } from 'pixi.js';
-import { ColorSource, Graphics as PixiGraphics } from 'pixi.js';
 import { Container, Graphics, Stage, _ReactPixi } from '@pixi/react';
 import { PanelBoard } from '../components/panel-board';
 import { RectanglePrm } from '../components/primitives';
+import Layout from '../components/layout';
 
 export const ScenePage = (): FunctionComponent => {
   //const { t, i18n } = useTranslation();
@@ -35,27 +34,29 @@ export const ScenePage = (): FunctionComponent => {
   }, [stageRef.current]);
 
   return (
-    <div ref={containerRef}>
-      <Stage
-        ref={stageRef}
-        width={5000}
-        height={5000}
-        options={{ background: 0xffffff, resolution: 1, antialias: true }}
-        onMouseMove={(e) => {
-          setMouseMove([e.clientX, e.clientY]);
-        }}
-      >
-        <PanelBoard size={sceneSize} />
+    <Layout>
+        <div ref={containerRef}>
+          <Stage
+            ref={stageRef}
+            width={5000}
+            height={5000}
+            options={{ background: 0xffffff, resolution: 1, antialias: true }}
+            onMouseMove={(e) => {
+              setMouseMove([e.clientX, e.clientY]);
+            }}
+          >
+            <PanelBoard size={sceneSize} />
 
-        <RectanglePrm
-          x={10}
-          y={10}
-          width={100}
-          height={100}
-          color={0xff00ff}
-          mouseMove={mouseMove}
-        />
-      </Stage>
-    </div>
+            <RectanglePrm
+              x={10}
+              y={10}
+              width={100}
+              height={100}
+              color={0xff00ff}
+              mouseMove={mouseMove}
+            />
+          </Stage>
+        </div>
+    </Layout>
   );
 };
