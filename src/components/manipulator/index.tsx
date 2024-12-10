@@ -28,9 +28,6 @@ const ManipulatorCorner = ({
   const SetMouseBind = (e: FederatedPointerEvent) => {
     console.log('drag', e);
     if (ref.current) {
-      const offsetX = e.clientX - ref.current?.getBounds().left + 8;
-      const offsetY = e.clientY - ref.current?.getBounds().top + 8;
-      setMouseBind([offsetX, offsetY]);
       setDrag(!drag);
     }
   };
@@ -41,8 +38,8 @@ const ManipulatorCorner = ({
     setMouseY(mouseMove[1]);
     if (drag && ref.current) {
       console.log(mouseMove);
-      const cX = mouseX - mouseBind[0];
-      const cY = mouseY - mouseBind[1];
+      const cX = mouseMove[0];
+      const cY = mouseMove[1];
       ref.current?.setTransform(cX, cY);
     }
   }, [mouseMove, drag, ref]);
