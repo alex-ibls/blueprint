@@ -1,10 +1,17 @@
-import { Graphics } from '@pixi/react';
+import { Container, Graphics } from '@pixi/react';
 import {
   ColorSource,
   FederatedPointerEvent,
   Graphics as PixiGraphics,
 } from 'pixi.js';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 export const RectanglePrm = (props: {
   x: number;
@@ -14,8 +21,13 @@ export const RectanglePrm = (props: {
   color: ColorSource;
   mouseMove: [number, number];
 }) => {
+  const [selected, setSelected] = useState<boolean>(false);
   const [mouseX, setMouseX] = useState(props.x);
   const [mouseY, setMouseY] = useState(props.y);
+
+  const [currentX, setCurrentX] = useState(props.x);
+  const [currentY, setCurrentY] = useState(props.y);
+
   const [mouseBind, setMouseBind] = useState<[number, number]>([0, 0]);
   const draw = useCallback((g: PixiGraphics) => {
     g.beginFill(props.color);
@@ -23,47 +35,68 @@ export const RectanglePrm = (props: {
     g.endFill();
   }, []);
 
+  const selectedDraw = useCallback(
+    (g: PixiGraphics) => {
+      g.lineStyle(1, props.color);
+      g.moveTo(props.x - 10, props.y - 10);
+      g.lineTo(props.x + 10 + props.width, props.y - 10);
+      g.endFill();
+    },
+
+    [],
+  );
+
   const [drag, setDrag] = useState<boolean>(false);
 
-  const ref = useRef<PixiGraphics>(null);
+  const containerRef = useRef<PixiGraphics>(null);
+  const graphicsRef = useRef<PixiGraphics>(null);
+  const selectedRef = useRef<PixiGraphics>(null);
 
   useEffect(() => {
-    if (ref.current) {
-      console.log(ref.current);
+    if (containerRef.current) {
+      console.log(containerRef.current);
     }
-  }, [ref.current]);
+  }, [containerRef.current]);
 
   const SetMouseBind = (e: FederatedPointerEvent) => {
-    console.log(e);
-    if (ref.current) {
-      const offsetX = e.clientX - ref.current?.getBounds().left;
-      const offsetY = e.clientY - ref.current?.getBounds().top;
+    if (containerRef.current) {
+      const offsetX = e.clientX - containerRef.current?.getBounds().left;
+      const offsetY = e.clientY - containerRef.current?.getBounds().top;
       setMouseBind([offsetX, offsetY]);
       setDrag(!drag);
+      setSelected(!selected);
     }
   };
 
   useEffect(() => {
     setMouseX(props.mouseMove[0]);
     setMouseY(props.mouseMove[1]);
-    if (drag) {
+    if (drag && graphicsRef.current) {
       console.log(props.mouseMove);
-
-      ref.current?.setTransform(mouseX - mouseBind[0], mouseY - mouseBind[1]);
+      const cX = mouseX - mouseBind[0];
+      const cY = mouseY - mouseBind[1];
+      setCurrentX(graphicsRef.current.x);
+      setCurrentY(graphicsRef.current.y);
+      containerRef.current?.setTransform(cX, cY);
     }
-  }, [props.mouseMove, drag, ref]);
+  }, [props.mouseMove, drag, graphicsRef]);
 
   return (
-    <Graphics
-      draw={draw}
-      ref={ref}
-      interactive={true}
-      pointerdown={(e) => {
-        SetMouseBind(e);
-      }}
-      pointerup={() => {
-        setDrag(false);
-      }}
-    />
+    <Container ref={containerRef}>
+      {selected && (
+        <Graphics ref={selectedRef} draw={selectedDraw}></Graphics>
+      )}
+      <Graphics
+        ref={graphicsRef}
+        draw={draw}
+        interactive={true}
+        pointerdown={(e) => {
+          SetMouseBind(e);
+        }}
+        pointerup={() => {
+          setDrag(false);
+        }}
+      />
+    </Container>
   );
 };

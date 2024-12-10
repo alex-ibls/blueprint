@@ -23,19 +23,18 @@ export const ScenePage = (): FunctionComponent => {
       const width: number = containerRef?.current.offsetWidth || 0;
       const height: number = containerRef?.current.offsetHeight || 0;
       setSceneSize({ width, height });
-      console.log({ width, height });
     }
   }, [containerRef.current]);
 
   useEffect(() => {
     //loadBlueprintTexture(stageRef.current?.options.)
     setMount(true);
-    console.log(stageRef.current.app);
+   // console.log(stageRef.current.app);
   }, [stageRef.current]);
 
   return (
     <Layout>
-        <div ref={containerRef}>
+        <div ref={containerRef} className='overflow-x-auto'>
           <Stage
             ref={stageRef}
             width={5000}
