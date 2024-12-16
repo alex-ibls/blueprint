@@ -26,13 +26,17 @@ export const RectanglePrm = (props: {
   const [height, setHeight] = useState(props.height);
 
   const [mouseBind, setMouseBind] = useState<[number, number]>([0, 0]);
-  const draw = useCallback((g: PixiGraphics) => {
-    g.beginFill(props.color);
-    g.drawRect(mouseX, mouseY, width, height);
-    g.endFill();
-  }, []);
+  const draw = useCallback(
+    (g: PixiGraphics) => {
+      g.beginFill(props.color);
+      g.drawRect(mouseX, mouseY, width, height);
+      g.endFill();
+    },
+    [width, height],
+  );
 
   const [drag, setDrag] = useState<boolean>(false);
+  const [resize, setResize] = useState<ManipulatorDragEvent | null>(null);
 
   const containerRef = useRef<PixiGraphics>(null);
   const graphicsRef = useRef<PixiGraphics>(null);
@@ -53,17 +57,31 @@ export const RectanglePrm = (props: {
     }
   };
 
-  
   useEffect(() => {
     setMouseX(props.mouseMove[0]);
     setMouseY(props.mouseMove[1]);
-    if (drag && graphicsRef.current) {
-      console.log(props.mouseMove);
-      const cX = mouseX - mouseBind[0];
-      const cY = mouseY - mouseBind[1];
-      containerRef.current?.setTransform(cX, cY);
+    const cX = mouseX - mouseBind[0];
+    const cY = mouseY - mouseBind[1];
+    if (graphicsRef.current) {
+      if (drag) {
+        containerRef.current?.setTransform(cX, cY);
+      }
+      if (resize) {
+        const _width =
+          mouseX > resize.coords[0]
+            ? resize.coords[0] + mouseX
+            : resize.coords[0] - mouseX;
+        const _height =
+          mouseY > resize.coords[1]
+            ? resize.coords[1] + mouseY
+            : resize.coords[1] - mouseY;
+        console.log(_width);
+        console.log(_height);
+        setWidth(_width);
+        setHeight(_height);
+      }
     }
-  }, [props.mouseMove, drag, graphicsRef]);
+  }, [props.mouseMove, drag, graphicsRef, resize]);
 
   return (
     <Container ref={containerRef}>
@@ -79,16 +97,19 @@ export const RectanglePrm = (props: {
         }}
       />
       {selected && (
-        <Container>
-          <Manipulator
-            x={currentX}
-            y={currentY}
-            width={width}
-            height={height}
-            mouseMove={props.mouseMove}
-            onCornerDrag={(e) => {}}
-          />
-        </Container>
+        <Manipulator
+          x={currentX}
+          y={currentY}
+          width={width}
+          height={height}
+          mouseMove={props.mouseMove}
+          onCornerDrag={(e) => {
+            setResize(e);
+          }}
+          onCornerDragEnd={(e) => {
+            setResize(null);
+          }}
+        />
       )}
     </Container>
   );

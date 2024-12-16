@@ -1,55 +1,46 @@
 import { Container, Graphics } from '@pixi/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { FederatedPointerEvent, Graphics as PixiGraphics } from 'pixi.js';
+import { Graphics as PixiGraphics } from 'pixi.js';
 import { ManipulatorDragEvent, ManipulatorDragSide } from './manipulator';
 
 const ManipulatorCorner = ({
   drawFunction,
   dragSide,
-  mouseMove,
   x,
   y,
   width,
   height,
+  onDragStart,
+  onDragEnd,
 }: {
   drawFunction: (g: PixiGraphics) => void;
   dragSide: ManipulatorDragSide;
-  mouseMove: [number, number];
   x: number;
   y: number;
   width: number;
   height: number;
+  onDragStart: () => void;
+  onDragEnd?: () => void;
 }) => {
-  const [mouseX, setMouseX] = useState(x);
-  const [mouseY, setMouseY] = useState(y);
-  const [mouseBind, setMouseBind] = useState<[number, number]>([0, 0]);
   const [drag, setDrag] = useState<boolean>(false);
 
-  const SetMouseBind = (e: FederatedPointerEvent) => {
-    console.log('drag', e);
-    if (ref.current) {
-      setDrag(!drag);
+  useEffect(() => {
+    if (drag) {
+      onDragStart();
+    } else {
+      onDragEnd && onDragEnd();
     }
-  };
+  }, [drag]);
 
   const ref = useRef<PixiGraphics>(null);
-  useEffect(() => {
-    setMouseX(mouseMove[0]);
-    setMouseY(mouseMove[1]);
-    if (drag && ref.current) {
-      console.log(mouseMove);
-      const cX = mouseMove[0];
-      const cY = mouseMove[1];
-      ref.current?.setTransform(cX, cY);
-    }
-  }, [mouseMove, drag, ref]);
+
   return (
     <Graphics
       draw={drawFunction}
       ref={ref}
       interactive={true}
-      pointerdown={(e) => {
-        SetMouseBind(e);
+      pointerdown={() => {
+        setDrag(!drag);
       }}
       pointerup={() => {
         setDrag(false);
@@ -65,6 +56,7 @@ export const Manipulator = ({
   height,
   mouseMove,
   onCornerDrag,
+  onCornerDragEnd,
 }: {
   x: number;
   y: number;
@@ -72,12 +64,10 @@ export const Manipulator = ({
   height: number;
   mouseMove: [number, number];
   onCornerDrag: (e: ManipulatorDragEvent) => void;
+  onCornerDragEnd: (e: ManipulatorDragEvent) => void;
 }) => {
   const selectedRef = useRef<PixiGraphics>(null);
-  const refTl = useRef<PixiGraphics>(null);
-  const refTr = useRef<PixiGraphics>(null);
-  const refBr = useRef<PixiGraphics>(null);
-  const refBl = useRef<PixiGraphics>(null);
+  const containerRef = useRef<PixiGraphics>(null);
 
   const CornerTL = useCallback((g: PixiGraphics) => {
     const color = [0, 0, 254, 1];
@@ -121,7 +111,7 @@ export const Manipulator = ({
   useEffect(() => {}, [mouseMove]);
 
   return (
-    <Container>
+    <Container ref={containerRef}>
       <Graphics ref={selectedRef} draw={selectedDraw}></Graphics>
       <ManipulatorCorner
         drawFunction={CornerTL}
@@ -130,7 +120,9 @@ export const Manipulator = ({
         height={height}
         width={width}
         dragSide={'TL'}
-        mouseMove={mouseMove}
+        onDragStart={() => onCornerDrag({ type: 'TL', coords: mouseMove })}
+        onDragEnd={() => onCornerDragEnd({ type: 'TL', coords: mouseMove })}
+        
       />
       <ManipulatorCorner
         drawFunction={CornerTR}
@@ -139,7 +131,8 @@ export const Manipulator = ({
         height={height}
         width={width}
         dragSide={'TR'}
-        mouseMove={mouseMove}
+        onDragStart={() => onCornerDrag({ type: 'TR', coords: mouseMove })}
+        onDragEnd={() => onCornerDragEnd({ type: 'TR', coords: mouseMove })}
       />
       <ManipulatorCorner
         drawFunction={CornerBR}
@@ -148,7 +141,8 @@ export const Manipulator = ({
         height={height}
         width={width}
         dragSide={'BR'}
-        mouseMove={mouseMove}
+        onDragStart={() => onCornerDrag({ type: 'BR', coords: mouseMove })}
+        onDragEnd={() => onCornerDragEnd({ type: 'BR', coords: mouseMove })}
       />
       <ManipulatorCorner
         drawFunction={CornerBL}
@@ -157,7 +151,8 @@ export const Manipulator = ({
         height={height}
         width={width}
         dragSide={'BL'}
-        mouseMove={mouseMove}
+        onDragStart={() => onCornerDrag({ type: 'BL', coords: mouseMove })}
+        onDragEnd={() => onCornerDragEnd({ type: 'BL', coords: mouseMove })}
       />
     </Container>
   );
