@@ -1,11 +1,8 @@
 //import { useTranslation } from 'react-i18next';
 import type { FunctionComponent } from '../common/types';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Container, Graphics, Stage, _ReactPixi } from '@pixi/react';
-import { PanelBoard } from '../components/panel-board';
-import { RectanglePrm } from '../components/primitives';
+import { useEffect, useRef, useState } from 'react';
 import Layout from '../components/layout';
-
+import { Canvas } from '@react-three/fiber'
 export const ScenePage = (): FunctionComponent => {
   //const { t, i18n } = useTranslation();
   //const onTranslateButtonClick = async (): Promise<void> => {};
@@ -17,7 +14,7 @@ export const ScenePage = (): FunctionComponent => {
   );
 
   const [mount, setMount] = useState<boolean>(false);
-  const [mouseMove, setMouseMove] = useState<[number, number]>([0, 0]);
+
   useEffect(() => {
     if (containerRef.current) {
       const width: number = containerRef?.current.offsetWidth || 0;
@@ -29,33 +26,19 @@ export const ScenePage = (): FunctionComponent => {
   useEffect(() => {
     //loadBlueprintTexture(stageRef.current?.options.)
     setMount(true);
-   // console.log(stageRef.current.app);
+    // console.log(stageRef.current.app);
   }, [stageRef.current]);
 
   return (
     <Layout>
-        <div ref={containerRef} className='overflow-x-auto'>
-          <Stage
-            ref={stageRef}
-            width={5000}
-            height={5000}
-            options={{ background: 0xffffff, resolution: 1, antialias: true }}
-            onMouseMove={(e) => {
-              setMouseMove([e.clientX, e.clientY]);
-            }}
-          >
-            <PanelBoard size={sceneSize} />
-
-            <RectanglePrm
-              x={10}
-              y={10}
-              width={100}
-              height={100}
-              color={0xff00ff}
-              mouseMove={mouseMove}
-            />
-          </Stage>
-        </div>
+      <div ref={containerRef} className="overflow-x-auto w-full h-full" >
+        <Canvas>
+          <mesh>
+            <boxGeometry />
+            <meshStandardMaterial />
+          </mesh>
+        </Canvas>
+      </div>
     </Layout>
   );
 };
