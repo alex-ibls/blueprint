@@ -1,5 +1,5 @@
 import { useLoader } from '@react-three/fiber';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Mesh, MeshStandardMaterial, TextureLoader } from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
@@ -12,12 +12,17 @@ export type ModelObjectProps = {
 
 const Model = ({ id }: ModelObjectProps) => {
   const sceneStore = useSceneStore();
-
+  const modelRef = useRef<any>(null);
   const [selected, select] = useState(false);
   const [object, setObject] = useState<THREE.Group>();
 
   useEffect(() => {
-    //console.info('mouse position', sceneStore.mousePosition);
+    if (selected) {
+      console.info('mouse position', sceneStore.mousePosition);
+      console.log(modelRef.current);
+      /* modelRef.current.position?.setX(sceneStore.mousePosition.x / 2);
+      modelRef.current.position?.setY(sceneStore.mousePosition.y / 2); */
+    }
   }, [sceneStore.mousePosition]);
 
   useEffect(() => {
@@ -29,6 +34,7 @@ const Model = ({ id }: ModelObjectProps) => {
   useEffect(() => {
     if (selected && object) {
       sceneStore.selectObject(id);
+      sceneStore.beginDrag();
     }
   }, [selected, object]);
 
@@ -55,7 +61,12 @@ const Model = ({ id }: ModelObjectProps) => {
     }
   }, [obj, texture]);
   return (
-    <mesh castShadow receiveShadow onClick={() => select(!selected)}>
+    <mesh
+      castShadow
+      receiveShadow
+      onClick={() => select(!selected)}
+      ref={modelRef}
+    >
       <primitive
         object={obj}
         color="gray"

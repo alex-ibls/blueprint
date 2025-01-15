@@ -161,7 +161,7 @@ export const ScenePage = (): FunctionComponent => {
           <mesh>
             <Sky sunPosition={[100, 20, 100]} />
             {sceneStore.objects.map((obj) => (
-              <Model id={obj} key={obj}/>
+              <Model id={obj} key={obj} />
             ))}
             <Whall />
             <Whall2 />
