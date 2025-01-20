@@ -18,10 +18,15 @@ const Model = ({ id }: ModelObjectProps) => {
 
   useEffect(() => {
     if (selected) {
+      let windowHalfX = window.innerWidth / 2;
+      let windowHalfY = window.innerHeight / 2;
+      console.log(windowHalfX);
       console.info('mouse position', sceneStore.mousePosition);
       console.log(modelRef.current);
-      /* modelRef.current.position?.setX(sceneStore.mousePosition.x / 2);
-      modelRef.current.position?.setY(sceneStore.mousePosition.y / 2); */
+      modelRef.current.position.x +=
+        (sceneStore.mousePosition.x - windowHalfX) * 0.005;
+      modelRef.current.position.z +=
+        (sceneStore.mousePosition.y - windowHalfY) * 0.005;
     }
   }, [sceneStore.mousePosition]);
 

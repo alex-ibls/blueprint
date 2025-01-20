@@ -167,7 +167,7 @@ export const ScenePage = (): FunctionComponent => {
             <Whall2 />
             <meshStandardMaterial />
             <Ground />
-            <OrbitControls />
+            <OrbitControls enabled={!sceneStore.dragging} />
           </mesh>
         </Canvas>
       </div>
