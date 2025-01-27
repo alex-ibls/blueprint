@@ -44,7 +44,10 @@ const storeCreator = middlewares((set) => ({
   setMousePosition: (event: MouseEvent) =>
     set(
       produce<SceneState>((state) => {
-        state.mousePosition = new THREE.Vector2(event.clientX, event.clientY);
+        state.mousePosition = new THREE.Vector2(
+          (event.clientX / window.innerWidth) * 2 - 1,
+          -(event.clientY / window.innerHeight) * 2 + 1,
+        );
       }),
     ),
   selectObject: (id) => set({ selectedObject: id }),

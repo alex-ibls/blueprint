@@ -11,22 +11,22 @@ export type ModelObjectProps = {
 };
 
 const Model = ({ id }: ModelObjectProps) => {
+  const raycaster = new THREE.Raycaster();
   const sceneStore = useSceneStore();
   const modelRef = useRef<any>(null);
   const [selected, select] = useState(false);
   const [object, setObject] = useState<THREE.Group>();
-
+  const prevCountRef = useRef<THREE.Vector2>();
   useEffect(() => {
     if (selected) {
-      let windowHalfX = window.innerWidth / 2;
-      let windowHalfY = window.innerHeight / 2;
-      console.log(windowHalfX);
       console.info('mouse position', sceneStore.mousePosition);
       console.log(modelRef.current);
-      modelRef.current.position.x +=
-        (sceneStore.mousePosition.x - windowHalfX) * 0.005;
-      modelRef.current.position.z +=
-        (sceneStore.mousePosition.y - windowHalfY) * 0.005;
+
+      modelRef.current.position.x += sceneStore.mousePosition.x;
+
+      modelRef.current.position.z += sceneStore.mousePosition.y;
+
+      prevCountRef.current = sceneStore.mousePosition;
     }
   }, [sceneStore.mousePosition]);
 
@@ -53,7 +53,7 @@ const Model = ({ id }: ModelObjectProps) => {
       color: 'white',
       roughness: 1,
       metalness: 1,
-     /*  map: texture, */
+      /*  map: texture, */
       displacementScale: 1,
     });
     obj.traverse(function (child) {
@@ -69,7 +69,7 @@ const Model = ({ id }: ModelObjectProps) => {
     <mesh
       castShadow
       receiveShadow
-     /*  onClick={() => select(!selected)} */
+      onClick={() => select(!selected)}
       ref={modelRef}
     >
       <primitive

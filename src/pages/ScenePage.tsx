@@ -168,7 +168,7 @@ export const ScenePage = (): FunctionComponent => {
             <Whall2 />
             <meshStandardMaterial />
             <Ground />
-            <OrbitControls />
+            <OrbitControls/>
           </mesh>
         </Canvas>
       </div>
