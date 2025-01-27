@@ -91,7 +91,7 @@ export const Model3 = () => {
         object={fbx2}
         color="red"
         scale={[0.05, 0.05, 0.05]}
-        position={[-4, -3, -6]}
+        position={[-4, -3.5, -6]}
       />
     </mesh>
   );
@@ -163,11 +163,12 @@ export const ScenePage = (): FunctionComponent => {
             {sceneStore.objects.map((obj) => (
               <Model id={obj} key={obj} />
             ))}
+            <Model3 />
             <Whall />
             <Whall2 />
             <meshStandardMaterial />
             <Ground />
-            <OrbitControls enabled={!sceneStore.dragging} />
+            <OrbitControls />
           </mesh>
         </Canvas>
       </div>

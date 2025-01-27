@@ -53,7 +53,7 @@ const Model = ({ id }: ModelObjectProps) => {
       color: 'white',
       roughness: 1,
       metalness: 1,
-      map: texture,
+     /*  map: texture, */
       displacementScale: 1,
     });
     obj.traverse(function (child) {
@@ -69,14 +69,14 @@ const Model = ({ id }: ModelObjectProps) => {
     <mesh
       castShadow
       receiveShadow
-      onClick={() => select(!selected)}
+     /*  onClick={() => select(!selected)} */
       ref={modelRef}
     >
       <primitive
         object={obj}
         color="gray"
         scale={[0.008, 0.008, 0.008]}
-        position={[0, -5, -6]}
+        position={[-1, -5, -6]}
       />
     </mesh>
   );
